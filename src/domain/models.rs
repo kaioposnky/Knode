@@ -105,13 +105,13 @@ pub struct MemoryStats {
     /// Used memory in bytes.
     pub used_bytes: u64,
     /// Available memory in bytes.
-    pub available_bytes: u64,
+    pub free_bytes: u64,
     /// Memory used by buffers and cache in bytes.
     pub buffers_cache_bytes: u64,
     /// Total swap memory in bytes.
     pub swap_total_bytes: u64,
     /// Used swap memory in bytes.
-    pub swap_used_bytes: u64,
+    pub swap_free_bytes: u64,
 }
 
 /// Network statistics.
