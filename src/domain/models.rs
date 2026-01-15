@@ -1,170 +1,199 @@
 use serde::{Deserialize, Serialize};
 
-/// Estrutura completa de telemetria para sistemas Linux.
+/// Complete telemetry structure for Linux systems.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MachineReport {
+    /// System metadata information.
     pub metadata: Metadata,
+    /// CPU statistics.
     pub cpu: CpuStats,
+    /// Memory statistics.
     pub memory: MemoryStats,
+    /// Process statistics.
     pub processes: ProcessStats,
+    /// Network statistics.
     pub network: NetworkStats,
+    /// Storage statistics.
     pub storage: StorageStats,
+    /// Physical sensors data.
     pub sensors: PhysicalSensors,
+    /// Security statistics.
     pub security: SecurityStats,
+    /// System health information.
     pub health: SystemHealth,
-    /// Unix Epoch em milissegundos. Exemplo: 1705000000000
+    /// Unix Epoch in milliseconds. Example: 1705000000000
     pub timestamp: i64,
 }
 
-/// Censo numérico e detalhamento dos principais processos do sistema.
+/// Numerical census and details of main system processes.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProcessStats {
-    /// Quantidade total de processos na tabela do Kernel. Exemplo: 285
+    /// Total number of processes in the Kernel table. Example: 285
     pub total_count: u32,
-    /// Processos em execução ativa. Exemplo: 2
+    /// Processes currently running. Example: 2
     pub running_count: u32,
-    /// Processos em espera (I/O ou Sleep). Exemplo: 282
+    /// Processes waiting (I/O or Sleep). Example: 282
     pub sleeping_count: u32,
-    /// Processos mortos que ainda ocupam a tabela. Exemplo: 1
+    /// Dead processes still occupying the table. Example: 1
     pub zombie_count: u32,
-    /// Lista dos 5 processos que mais consomem CPU no momento.
+    /// List of top 5 processes consuming the most CPU currently.
     pub top_cpu: Vec<ProcessInfo>,
-    /// Lista dos 5 processos que mais consomem memória no momento.
+    /// List of top 5 processes consuming the most memory currently.
     pub top_memory: Vec<ProcessInfo>,
 }
 
-/// Informações resumidas de um processo específico para diagnóstico.
+/// Summary information of a specific process for diagnosis.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProcessInfo {
-    /// Identificador do processo. Exemplo: 1234
+    /// Process identifier (PID). Example: 1234
     pub pid: u32,
-    /// Nome do executável. Exemplo: "rust_service"
+    /// Executable name. Example: "rust_service"
     pub name: String,
-    /// Usuário que iniciou o processo. Exemplo: "root" ou "kaio"
+    /// User who started the process. Example: "root" or "user"
     pub user: String,
-    /// Porcentagem de uso de CPU. Exemplo: 15.5
+    /// CPU usage percentage. Example: 15.5
     pub cpu_usage: f32,
-    /// Uso de memória RAM em Megabytes. Exemplo: 128.5
+    /// RAM memory usage in Megabytes. Example: 128.5
     pub mem_usage_mb: f32,
 }
 
+/// System metadata.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Metadata {
+    /// Unique machine identifier.
     pub machine_id: String,
+    /// Hostname of the system.
     pub hostname: String,
+    /// Operating system distribution.
     pub os_distro: String,
-    pub kernel_version: String,
+    /// System uptime in seconds.
     pub uptime: u64,
+    /// Virtualization type (if any).
     pub virtualization: String,
-    /// Número de série da placa-mãe. Exemplo: "XYZ-12345"
-    pub bios_serial: String,
-    /// Versão do Firmware. Exemplo: "UEFI 2.7.1"
-    pub bios_version: String,
-    /// Timestamp do momento em que o sistema ligou. Exemplo: 1704913600
-    pub boot_time: i64,
-    /// Fuso horário configurado. Exemplo: "America/Sao_Paulo"
+    /// Timestamp of when the system booted. Example: 1704913600
+    pub boot_time: u64,
+    /// Configured time zone. Example: "America/Sao_Paulo"
     pub timezone: String,
-    /// Desvio do relógio local vs servidor NTP em ms. Exemplo: 0.005
-    pub ntp_offset_ms: f32,
 }
 
+/// CPU statistics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CpuStats {
+    /// Total CPU usage percentage.
     pub usage_total_pct: f32,
+    /// Load average over 1, 5, and 15 minutes.
     pub load_avg: [f64; 3],
+    /// Usage percentage per thread/core.
     pub threads_usage: Vec<f32>,
+    /// Interrupts per second.
     pub interrupts_sec: u64,
-    pub user_time: u64,
-    pub system_time: u64,
-    /// Tempo de espera por I/O de disco. Exemplo: 2.5
+    /// Disk I/O wait time percentage. Example: 2.5
     pub io_wait_time: f32,
+    /// CPU idle time.
     pub idle_time: u64,
-    /// Trocas de contexto por segundo. Exemplo: 5000
-    pub context_switches_sec: u64,
-    /// Frequência atual de cada núcleo em MHz. Exemplo: [3200, 2400, 3200]
+    /// Current frequency of each core in MHz. Example: [3200, 2400, 3200]
     pub threads_freq_mhz: Vec<u32>,
+    /// Current CPU core voltage. Example: 1.15
+    pub voltage_vcore: f32,
 }
 
+/// Memory statistics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct MemoryStats {
+    /// Total memory in bytes.
     pub total_bytes: u64,
+    /// Used memory in bytes.
     pub used_bytes: u64,
+    /// Available memory in bytes.
     pub available_bytes: u64,
+    /// Memory used by buffers and cache in bytes.
     pub buffers_cache_bytes: u64,
+    /// Total swap memory in bytes.
     pub swap_total_bytes: u64,
+    /// Used swap memory in bytes.
     pub swap_used_bytes: u64,
-    /// Falhas graves (requerem leitura de disco). Exemplo: 10
-    pub page_faults_major: u64,
-    /// Falhas leves (resolvidas na RAM). Exemplo: 500
-    pub page_faults_minor: u64,
 }
 
+/// Network statistics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NetworkStats {
+    /// Aggregate received bytes per second.
     pub aggregate_rx_bytes_sec: u64,
+    /// Aggregate transmitted bytes per second.
     pub aggregate_tx_bytes_sec: u64,
-    /// Quantidade total de pacotes recebidos. Exemplo: 15000
+    /// Total received packets. Example: 15000
     pub aggregate_rx_packets: u64,
-    /// Quantidade total de pacotes enviados. Exemplo: 12000
+    /// Total transmitted packets. Example: 12000
     pub aggregate_tx_packets: u64,
+    /// Total network errors.
     pub total_errors: u64,
+    /// Total dropped packets.
     pub total_drops: u64,
-    /// Lista de interfaces físicas e seus IPs. Exemplo: {"eth0": ["192.168.1.10"]}
+    /// List of physical interfaces and their IPs. Example: {"eth0": ["192.168.1.10"]}
     pub interface_ips: std::collections::HashMap<String, Vec<String>>,
+    /// Active TCP connections count.
     pub tcp_active_connections: u32,
+    /// TCP connections in TIME_WAIT state.
     pub tcp_time_wait_connections: u32,
-    /// Portas TCP atualmente em escuta. Exemplo: [22, 80, 443]
+    /// TCP ports currently listening. Example: [22, 80, 443]
     pub listening_ports: Vec<u16>,
 }
 
+/// Storage statistics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StorageStats {
+    /// List of partition information.
     pub partitions: Vec<PartitionInfo>,
+    /// Total bytes read per second.
     pub total_read_bytes_sec: u64,
+    /// Total bytes written per second.
     pub total_write_bytes_sec: u64,
+    /// Total read I/O operations per second.
     pub total_read_iops: u64,
+    /// Total write I/O operations per second.
     pub total_write_iops: u64,
-    /// Latência média de I/O em ms (Queue Depth). Exemplo: 0.8
+    /// Average I/O latency in ms (Queue Depth). Example: 0.8
     pub io_latency_ms: f32,
 }
 
+/// Information about a disk partition.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PartitionInfo {
+    /// Mount point path.
     pub mount_point: String,
+    /// Usage percentage.
     pub usage_pct: f32,
+    /// Free space in bytes.
     pub free_bytes: u64,
+    /// Total space in bytes.
     pub total_bytes: u64,
 }
 
-/// Sensores físicos (disponível em Bare Metal/Dedicado).
+/// Physical sensors (available on Bare Metal/Dedicated).
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PhysicalSensors {
-    /// Temperatura global da CPU em °C. Exemplo: 55.0
+    /// Global CPU temperature in °C. Example: 55.0
     pub cpu_temp: f32,
-    /// Temperatura de cada núcleo individual. Exemplo: [52.0, 54.0, 55.0]
+    /// Individual core temperatures. Example: [52.0, 54.0, 55.0]
     pub core_temps: Vec<f32>,
-    /// Temperatura de discos SSD/NVMe. Exemplo: [38.0]
+    /// SSD/NVMe storage temperatures. Example: [38.0]
     pub storage_temps: Vec<f32>,
-    /// Rotação das ventoinhas em RPM. Exemplo: [2200, 2400]
+    /// Fan speeds in RPM. Example: [2200, 2400]
     pub fan_speeds: Vec<u32>,
-    /// Voltagem atual do núcleo da CPU. Exemplo: 1.15
-    pub voltage_vcore: f32,
-    /// Status de carga e saúde da bateria. Exemplo: "Charging (85%)"
-    pub battery_status: String,
 }
 
+/// Security statistics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SecurityStats {
-    /// Data/Hora do último login via SSH ou local. Exemplo: "2024-05-20 14:00"
+    /// Date/Time of the last SSH or local login. Example: "2024-05-20 14:00"
     pub last_login: String,
-    /// Contador de falhas de autenticação de administrador. Exemplo: 0
-    pub sudo_failures: u32,
-    /// Indica se o Firewall (UFW/IPTables) está ativo. Exemplo: true
+    /// Indicates if the Firewall (UFW/IPTables) is active. Example: true
     pub firewall_active: bool,
 }
 
+/// System health metrics.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SystemHealth {
+    /// Available system entropy.
     pub entropy_avail: u32,
-    pub active_users: u32,
 }
